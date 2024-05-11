@@ -19,9 +19,12 @@
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
-    "@electron-toolkit/utils": "^3.0.0"
+    "@electron-toolkit/utils": "^3.0.0",
+    "element-plus": "^2.7.2"
   },
   "devDependencies": {
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-vue-components": "^0.27.0",
     "@electron-toolkit/eslint-config": "^1.0.1",
     "@rushstack/eslint-patch": "^1.6.1",
     "@vitejs/plugin-vue": "^5.0.3",
@@ -32,6 +35,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.20.1",
     "prettier": "^3.2.4",
+    "sass": "^1.77.1",
     "vite": "^5.0.12",
     "vue": "^3.4.15"
   }
