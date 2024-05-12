@@ -4,20 +4,30 @@ import iconCSV from '@renderer/assets/imgs/icon-csv.png'
 import iconTransform from '@renderer/assets/imgs/icon-transform.png'
 import iconPlus from '@renderer/assets/imgs/icon-plus.png'
 
-const uploadFileName = ref('')
+const uploadFilePath = ref('')
+
+const getFileNameByPath = (path) => {
+  const fileName = path.split('/').pop()
+  return fileName
+}
 
 const upload = async () => {
-  const fileName = await window.electronAPI.openFile()
-  uploadFileName.value = fileName
+  const filePath = await window.electronAPI.openFile()
+  getFileNameByPath(filePath)
+  uploadFilePath.value = filePath
+}
+
+const clearFilePath = () => {
+  uploadFilePath.value = ''
 }
 </script>
 
 <template>
   <div class="control">
     <div class="left file">
-      <template v-if="uploadFileName">
+      <template v-if="uploadFilePath">
         <img class="icon" :src="iconCSV" alt="" />
-        <div class="file-name">{{ uploadFileName }}</div>
+        <div class="file-name">{{ getFileNameByPath(uploadFilePath) }}</div>
       </template>
       <div v-else class="upload" @click="upload">
         <img class="icon-plus" :src="iconPlus" alt="" />
@@ -25,6 +35,9 @@ const upload = async () => {
     </div>
     <div class="middle">
       <img class="icon-transform" :src="iconTransform" alt="" />
+      <n-button v-if="uploadFilePath" class="button" type="primary" @click="clearFilePath"
+        >重新选择</n-button
+      >
     </div>
     <div class="right file">
       <img class="icon" :src="iconCSV" alt="" />
@@ -40,6 +53,14 @@ const upload = async () => {
   align-items: center;
   margin: 0 auto;
   height: 300px;
+
+  .middle {
+    text-align: center;
+
+    .button {
+      margin-top: 15px;
+    }
+  }
 
   .icon-transform {
     width: 50px;

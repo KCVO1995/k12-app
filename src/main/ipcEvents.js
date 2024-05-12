@@ -6,9 +6,7 @@ async function handleFileOpen() {
     properties: ['openFile']
   })
   if (!canceled) {
-    const filePath = filePaths[0]
-    const fileName = filePath.split('/').pop()
-    return fileName
+    return filePaths[0]
   }
 }
 
