@@ -9,5 +9,10 @@ declare module 'vue' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
     FileTransform: typeof import('./src/components/FileTransform/index.vue')['default']
+    NIcon: typeof import('naive-ui')['NIcon']
+    NP: typeof import('naive-ui')['NP']
+    NText: typeof import('naive-ui')['NText']
+    NUpload: typeof import('naive-ui')['NUpload']
+    NUploadDragger: typeof import('naive-ui')['NUploadDragger']
   }
 }

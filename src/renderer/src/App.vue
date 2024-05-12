@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import FileTransform from './components/FileTransform/index.vue'
-const ipcHandle = () => window.electron.ipcRenderer.send('ping')
 </script>
 
 <template>
