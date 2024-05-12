@@ -4,7 +4,9 @@ import iconCSV from '@renderer/assets/imgs/icon-csv.png'
 import iconTransform from '@renderer/assets/imgs/icon-transform.png'
 import iconPlus from '@renderer/assets/imgs/icon-plus.png'
 
-const uploadFilePath = ref('')
+const uploadFilePath = ref(`/Users/leejacky/Downloads/16724orders_report2024-05-12-18-07-46.csv`)
+const hasTransform = ref(false)
+// const uploadFilePath = ref('')
 
 const getFileNameByPath = (path) => {
   const fileName = path.split('/').pop()
@@ -19,6 +21,17 @@ const upload = async () => {
 
 const clearFilePath = () => {
   uploadFilePath.value = ''
+  hasTransform.value = false
+}
+
+const saveFile = async () => {
+  await window.electronAPI.saveFile()
+}
+
+const fileTransform = async () => {
+  if (!uploadFilePath.value) return
+  await window.electronAPI.transformFile(uploadFilePath.value)
+  hasTransform.value = true
 }
 </script>
 
@@ -28,6 +41,7 @@ const clearFilePath = () => {
       <template v-if="uploadFilePath">
         <img class="icon" :src="iconCSV" alt="" />
         <div class="file-name">{{ getFileNameByPath(uploadFilePath) }}</div>
+        <n-button class="button" type="primary" @click="clearFilePath">重新选择</n-button>
       </template>
       <div v-else class="upload" @click="upload">
         <img class="icon-plus" :src="iconPlus" alt="" />
@@ -35,13 +49,13 @@ const clearFilePath = () => {
     </div>
     <div class="middle">
       <img class="icon-transform" :src="iconTransform" alt="" />
-      <n-button v-if="uploadFilePath" class="button" type="primary" @click="clearFilePath"
-        >重新选择</n-button
+      <n-button v-if="uploadFilePath" class="button" type="primary" @click="fileTransform"
+        >转换</n-button
       >
     </div>
     <div class="right file">
       <img class="icon" :src="iconCSV" alt="" />
-      <div class="file-name">2011.csv</div>
+      <n-button v-if="hasTransform" class="button" type="primary" @click="saveFile">下载</n-button>
     </div>
   </div>
 </template>
@@ -56,10 +70,6 @@ const clearFilePath = () => {
 
   .middle {
     text-align: center;
-
-    .button {
-      margin-top: 15px;
-    }
   }
 
   .icon-transform {
@@ -75,6 +85,10 @@ const clearFilePath = () => {
       width: 90px;
       height: 90px;
     }
+  }
+
+  .button {
+    margin-top: 15px;
   }
 
   .file {
