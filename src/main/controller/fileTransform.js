@@ -1,5 +1,6 @@
 import { parse } from 'csv-parse/sync'
 import { stringify } from 'csv-stringify/sync'
+import { getOptions } from '../api/index.js'
 import fs from 'fs'
 
 let outputRow = null
@@ -95,43 +96,23 @@ const columns = [
   }
 ]
 
-const options = [
-  '颜色',
-  '材质',
-  '尺码',
-  '单位',
-  'Unit 单位',
-  'Unit',
-  'Tie Option',
-  'Tie Item',
-  'Team',
-  'Tea',
-  'Sports Tea',
-  'SIZE 尺码',
-  'SIZE',
-  'Size',
-  'Rash Guard',
-  'Polo Shirt',
-  'Polo',
-  'Item',
-  'Group 组别',
-  'Group 年级',
-  'Graduation',
-  'Grade',
-  'Gender性别',
-  'Gender 性别',
-  'GENDER',
-  'Gender',
-  'Fabric',
-  'Design Nam',
-  'Design',
-  'Color 颜色',
-  'Color',
-  'color',
-  'Code',
-  'Age Group',
-  'Age group'
-]
+const getOptionList = async () => {
+  let options = []
+  const {
+    data: { msg: data }
+  } = await getOptions({ page: 1 })
+  console.log(data, 'data')
+  const pageCount = data.page_count
+  options.push(...data.options)
+  for (let index = 2; index <= pageCount; index++) {
+    const {
+      data: { msg: data }
+    } = await getOptions({ page: index })
+    options.push(...data.options)
+  }
+  const optionList = options.map((option) => option.name)
+  return optionList
+}
 
 const resolveHeader = (header) => {
   header[0] = 'orderId'
@@ -147,8 +128,11 @@ const readCsvFile = (filePath) => {
   return csvData
 }
 
-const generateResultData = (csvData) => {
+const generateResultData = async (csvData) => {
   let prevData = null
+
+  const options = await getOptionList()
+  console.log(options, 'getOptionList')
 
   const resultData = csvData.map((data) => {
     if (!data.orderId && prevData) {
@@ -162,7 +146,7 @@ const generateResultData = (csvData) => {
       data['附加信息'] = prevData['附加信息']
     }
     const childInfo = getChildInfoByCustomData(data['附加信息'])
-    const skuInfo = getSkuInfoBySkuString(data['规格'])
+    const skuInfo = getSkuInfoBySkuString(data['规格'], options)
     const productCustomInfo = getProductCustomInfoByCustomData(
       data['附加信息'],
       data['商品名'],
@@ -191,10 +175,10 @@ const generateResultData = (csvData) => {
   return resultData
 }
 
-export const handleTransformFile = (event, filePath) => {
+export const handleTransformFile = async (event, filePath) => {
   console.log(filePath, 'filePath')
   const csvData = readCsvFile(filePath)
-  const resultData = generateResultData(csvData)
+  const resultData = await generateResultData(csvData)
   outputRow = toCsvArray(resultData, columns)
   console.log(outputRow, 'outputRow')
 
@@ -253,7 +237,7 @@ const getProductCustomInfoByCustomData = (customData, currentProductName) => {
   }
 }
 
-const getSkuInfoBySkuString = (skuString) => {
+const getSkuInfoBySkuString = (skuString, options) => {
   let _skuString = skuString
   options.forEach((options) => {
     _skuString = _skuString.replace(`${options}:`, '$')

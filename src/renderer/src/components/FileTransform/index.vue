@@ -66,11 +66,11 @@ const fileTransform = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 auto;
-  height: 300px;
 
   .middle {
+    display: flex;
     text-align: center;
+    flex-direction: column;
   }
 
   .icon-transform {

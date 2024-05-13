@@ -20,6 +20,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "axios": "^1.6.8",
     "csv": "^6.3.8",
     "naive-ui": "^2.38.2"
   },

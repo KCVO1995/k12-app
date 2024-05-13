@@ -10,10 +10,13 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     FileTransform: typeof import('./src/components/FileTransform/index.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
+    NDynamicInput: typeof import('naive-ui')['NDynamicInput']
     NIcon: typeof import('naive-ui')['NIcon']
     NP: typeof import('naive-ui')['NP']
     NText: typeof import('naive-ui')['NText']
     NUpload: typeof import('naive-ui')['NUpload']
     NUploadDragger: typeof import('naive-ui')['NUploadDragger']
+    SkuListSetting: typeof import('./src/components/SkuListSetting/index.vue')['default']
+    SkuListSettings: typeof import('./src/components/SkuListSettings/index.vue')['default']
   }
 }
