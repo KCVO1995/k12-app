@@ -4,7 +4,7 @@ import iconCSV from '@renderer/assets/imgs/icon-csv.png'
 import iconTransform from '@renderer/assets/imgs/icon-transform.png'
 import iconPlus from '@renderer/assets/imgs/icon-plus.png'
 
-const uploadFilePath = ref(`/Users/leejacky/Downloads/demo.csv`)
+const uploadFilePath = ref(``)
 const hasTransform = ref(false)
 // const uploadFilePath = ref('')
 
