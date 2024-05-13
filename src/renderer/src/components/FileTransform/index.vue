@@ -4,7 +4,7 @@ import iconCSV from '@renderer/assets/imgs/icon-csv.png'
 import iconTransform from '@renderer/assets/imgs/icon-transform.png'
 import iconPlus from '@renderer/assets/imgs/icon-plus.png'
 
-const uploadFilePath = ref(`/Users/leejacky/Downloads/16724orders_report2024-05-12-18-07-46.csv`)
+const uploadFilePath = ref(`/Users/leejacky/Downloads/demo.csv`)
 const hasTransform = ref(false)
 // const uploadFilePath = ref('')
 
@@ -55,6 +55,7 @@ const fileTransform = async () => {
     </div>
     <div class="right file">
       <img class="icon" :src="iconCSV" alt="" />
+      <div class="file-name">结果</div>
       <n-button v-if="hasTransform" class="button" type="primary" @click="saveFile">下载</n-button>
     </div>
   </div>
