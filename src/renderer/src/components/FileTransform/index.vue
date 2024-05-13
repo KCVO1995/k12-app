@@ -6,7 +6,6 @@ import iconPlus from '@renderer/assets/imgs/icon-plus.png'
 
 const uploadFilePath = ref(``)
 const hasTransform = ref(false)
-// const uploadFilePath = ref('')
 
 const getFileNameByPath = (path) => {
   const fileName = path.split('/').pop()

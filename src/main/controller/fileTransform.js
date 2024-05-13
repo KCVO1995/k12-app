@@ -146,11 +146,7 @@ const generateResultData = async (csvData) => {
     }
     const childInfo = getChildInfoByCustomData(data['附加信息'])
     const skuInfo = getSkuInfoBySkuString(data['规格'], options)
-    const productCustomInfo = getProductCustomInfoByCustomData(
-      data['附加信息'],
-      data['商品名'],
-      data['规格']
-    )
+    const productCustomInfo = getProductCustomInfoByCustomData(data['附加信息'], data['商品名'])
     prevData = data
     const result = {
       orderId: data.orderId,
