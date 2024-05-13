@@ -36,6 +36,18 @@ const columns = [
   {
     title: 'Class',
     key: 'schoolClass'
+  },
+  {
+    title: 'Product',
+    key: 'productName'
+  },
+  {
+    title: 'Shirt Name',
+    key: 'shirtName'
+  },
+  {
+    title: 'Number',
+    key: 'number'
   }
 ]
 
@@ -59,6 +71,7 @@ const readCsvFile = (filePath) => {
 
 const generateResultData = (csvData) => {
   let prevData = null
+
   const resultData = csvData.map((data) => {
     if (!data.orderId && prevData) {
       data.orderId = prevData.orderId
@@ -66,11 +79,18 @@ const generateResultData = (csvData) => {
       data['附加信息'] = prevData['附加信息']
     }
     const childInfo = getChildInfoByCustomData(data['附加信息'])
+    const productCustomInfo = getProductCustomInfoByCustomData(
+      data['附加信息'],
+      data['商品名'],
+      data['规格']
+    )
     prevData = data
     const result = {
       orderId: data.orderId,
       createTime: data['创建时间'],
-      ...childInfo
+      ...childInfo,
+      productName: data['商品名'],
+      ...productCustomInfo
     }
     return result
   })
@@ -116,4 +136,26 @@ const getChildInfoByCustomData = (customData) => {
   const grade = customData.match(/grade>(.*) class>/)?.[1] || ''
   const schoolClass = customData.match(/class>(.*) studentId>/)?.[1] || ''
   return { studentId, chineseName, firstName, familyName, grade, schoolClass }
+}
+
+const getProductCustomInfoByCustomData = (customData, currentProductName) => {
+  // data-1: 商品名:BIGZ Football Uniform | 商品规格:SIZE 尺码:L/180 | 商品数量:1 | shirtname: Chloe Hong | ; 孩子信息: {chineseName> name>Chloe familyName>Hong gender>Girl school>v000045 grade>10 class>NA studentId>15555 id>Chloe selected>true}
+  // data-1: 商品名:AISG Alumni Letterman Jacket | 商品规格:SIZE:JXLGraduation:List year in number field | 商品数量:1 | number: 1 | shirtname: 1 | ; data-2: 商品名:Multi-sports Uniform 多用途球服 | 商品规格:SIZE 尺码:JL | 商品数量:1 | shirtname: 333 | ; 孩子信息: {chineseName>lll name>Ryan familyName>Lee gender>女 school>boston grade>K class>1 studentId>1 id>Ryanlll selected>true}
+  let shirtName = ''
+  let number = ''
+  customData.split(';').forEach((item) => {
+    const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
+    // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
+    if (!itemProductName) return
+
+    if (itemProductName.trim() === currentProductName.trim()) {
+      shirtName = customData.match(/shirtname: (.*?) \|/)?.[1] || ''
+      number = customData.match(/number: (.*?) \|/)?.[1] || ''
+    }
+  })
+
+  return {
+    shirtName,
+    number
+  }
 }
