@@ -48,6 +48,39 @@ const columns = [
   {
     title: 'Number',
     key: 'number'
+  },
+  // TODO: 商品属性
+  {
+    title: 'QTY',
+    key: 'qty'
+  },
+  {
+    title: 'Price',
+    key: 'price'
+  },
+  {
+    title: '收货人',
+    key: 'receiver'
+  },
+  {
+    title: '联系手机',
+    key: 'contact'
+  },
+  {
+    title: '收货区域',
+    key: 'receiveArea'
+  },
+  {
+    title: '收货地址',
+    key: 'receiveAddress'
+  },
+  {
+    title: '买家留言',
+    key: 'remark'
+  },
+  {
+    title: 'Data',
+    key: 'customData'
   }
 ]
 
@@ -76,6 +109,11 @@ const generateResultData = (csvData) => {
     if (!data.orderId && prevData) {
       data.orderId = prevData.orderId
       data['创建时间'] = prevData['创建时间']
+      data['收货人'] = prevData['收货人']
+      data['联系手机'] = prevData['联系手机']
+      data['收货区域'] = prevData['收货区域']
+      data['收货地址'] = prevData['收货地址']
+      data['买家留言'] = prevData['买家留言']
       data['附加信息'] = prevData['附加信息']
     }
     const childInfo = getChildInfoByCustomData(data['附加信息'])
@@ -90,7 +128,15 @@ const generateResultData = (csvData) => {
       createTime: data['创建时间'],
       ...childInfo,
       productName: data['商品名'],
-      ...productCustomInfo
+      ...productCustomInfo,
+      qty: data['数量'],
+      price: data['单价'],
+      receiver: data['收货人'],
+      contact: data['联系手机'],
+      receiveArea: data['收货区域'],
+      receiveAddress: data['收货地址'],
+      remark: data['买家留言'],
+      customData: data['附加信息']
     }
     return result
   })
