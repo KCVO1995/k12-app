@@ -101,7 +101,6 @@ const getOptionList = async () => {
   const {
     data: { msg: data }
   } = await getOptions({ page: 1 })
-  console.log(data, 'data')
   const pageCount = data.page_count
   options.push(...data.options)
   for (let index = 2; index <= pageCount; index++) {
@@ -171,7 +170,6 @@ const generateResultData = async (csvData) => {
     }
     return result
   })
-  console.log(resultData, 'resultData')
   return resultData
 }
 

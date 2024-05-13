@@ -1,4 +1,5 @@
 import axios from 'axios'
+console.log('fuck')
 
 const headers = {
   adminToken: '',
@@ -46,14 +47,18 @@ const backgroundApi = axios.create({
   headers: getHeaders()
 })
 
+backgroundApi.interceptors.request.use(function (config) {
+  config.headers = getHeaders()
+  return config
+})
+
 // 添加响应拦截器
 backgroundApi.interceptors.response.use(
   async function (response) {
     if (response.data.code === 204 && response.data.msg && response.data.msg.desc === '未登录') {
-      console.log('未登录', response)
+      console.log('未登录', JSON.stringify(headers))
 
       return login().then(() => {
-        response.config.headers = getHeaders()
         return backgroundApi(response.config)
       })
     }
