@@ -49,7 +49,18 @@ const columns = [
     title: 'Number',
     key: 'number'
   },
-  // TODO: 商品属性
+  {
+    title: '规格1',
+    key: 'sku1'
+  },
+  {
+    title: '规格2',
+    key: 'sku2'
+  },
+  {
+    title: '规格3',
+    key: 'sku3'
+  },
   {
     title: 'QTY',
     key: 'qty'
@@ -84,13 +95,47 @@ const columns = [
   }
 ]
 
+const options = [
+  '颜色',
+  '材质',
+  '尺码',
+  '单位',
+  'Unit 单位',
+  'Unit',
+  'Tie Option',
+  'Tie Item',
+  'Team',
+  'Tea',
+  'Sports Tea',
+  'SIZE 尺码',
+  'SIZE',
+  'Size',
+  'Rash Guard',
+  'Polo Shirt',
+  'Polo',
+  'Item',
+  'Group 组别',
+  'Group 年级',
+  'Graduation',
+  'Grade',
+  'Gender性别',
+  'Gender 性别',
+  'GENDER',
+  'Gender',
+  'Fabric',
+  'Design Nam',
+  'Design',
+  'Color 颜色',
+  'Color',
+  'color',
+  'Code',
+  'Age Group',
+  'Age group'
+]
+
 const resolveHeader = (header) => {
   header[0] = 'orderId'
   return header
-  // return header.map((item) => {
-  //   if (item === '订单号') return 'orderId'
-  //   return item
-  // })
 }
 
 const readCsvFile = (filePath) => {
@@ -117,6 +162,7 @@ const generateResultData = (csvData) => {
       data['附加信息'] = prevData['附加信息']
     }
     const childInfo = getChildInfoByCustomData(data['附加信息'])
+    const skuInfo = getSkuInfoBySkuString(data['规格'])
     const productCustomInfo = getProductCustomInfoByCustomData(
       data['附加信息'],
       data['商品名'],
@@ -129,6 +175,7 @@ const generateResultData = (csvData) => {
       ...childInfo,
       productName: data['商品名'],
       ...productCustomInfo,
+      ...skuInfo,
       qty: data['数量'],
       price: data['单价'],
       receiver: data['收货人'],
@@ -203,5 +250,18 @@ const getProductCustomInfoByCustomData = (customData, currentProductName) => {
   return {
     shirtName,
     number
+  }
+}
+
+const getSkuInfoBySkuString = (skuString) => {
+  let _skuString = skuString
+  options.forEach((options) => {
+    _skuString = _skuString.replace(`${options}:`, '$')
+  })
+  const skuArray = _skuString.split('$')
+  return {
+    sku1: skuArray?.[1] || '',
+    sku2: skuArray?.[2] || '',
+    sku3: skuArray?.[3] || ''
   }
 }
