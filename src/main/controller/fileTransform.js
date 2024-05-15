@@ -182,7 +182,9 @@ export const handleTransformFile = async (event, filePath) => {
 export const saveResultFile = (filePath) => {
   if (!outputRow) return
   const outputFile = stringify(outputRow)
-  fs.writeFileSync(filePath + '.csv', outputFile)
+  const filename = filePath + '.csv'
+  fs.writeFileSync(filename, '\ufeff')
+  fs.appendFileSync(filename, outputFile)
 }
 
 const toCsvArray = (records, columns) => {
