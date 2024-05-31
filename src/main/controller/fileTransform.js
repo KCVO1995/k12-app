@@ -203,6 +203,8 @@ const toCsvArray = (records, columns) => {
 
 const getChildInfoByCustomData = (customData) => {
   // chineseName> name>Tong Tong familyName>Yip gender>Girl school>aisg-ersha grade>2 class>2C studentId>233771 id>Tong Tong selected>true
+  // 去除多余的空格
+  customData = customData.replace(/( +)>( +)/g, '>').replace(/ +/g, ' ')
   const studentId = customData.match(/studentId>(.*) id>/)?.[1] || ''
   const chineseName = customData.match(/chineseName>(.*) name>/)?.[1] || ''
   const firstName = customData.match(/name>(.*) familyName>/)?.[1] || ''
