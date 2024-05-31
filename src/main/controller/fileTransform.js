@@ -122,7 +122,8 @@ const readCsvFile = (filePath) => {
   const fs = require('fs')
   const csvString = fs.readFileSync(filePath, 'utf8', 'r+')
   const csvData = parse(csvString, {
-    columns: resolveHeader
+    columns: resolveHeader,
+    relax_column_count: true
   })
   return csvData
 }
