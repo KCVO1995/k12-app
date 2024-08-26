@@ -214,17 +214,24 @@ const getChildInfoByCustomData = (customData) => {
   return { studentId, chineseName, firstName, familyName, grade, schoolClass }
 }
 
+// 兼容特殊字符
+const processSpecialChar = (text) => {
+  return text
+    .replace(/#39;/g, `'`) // 避免干扰
+    .replace(/;/g, '') // 避免干扰
+}
+
 const getProductCustomInfoByCustomData = (customData, currentProductName) => {
   // data-1: 商品名:BIGZ Football Uniform | 商品规格:SIZE 尺码:L/180 | 商品数量:1 | shirtname: Chloe Hong | ; 孩子信息: {chineseName> name>Chloe familyName>Hong gender>Girl school>v000045 grade>10 class>NA studentId>15555 id>Chloe selected>true}
   // data-1: 商品名:AISG Alumni Letterman Jacket | 商品规格:SIZE:JXLGraduation:List year in number field | 商品数量:1 | number: 1 | shirtname: 1 | ; data-2: 商品名:Multi-sports Uniform 多用途球服 | 商品规格:SIZE 尺码:JL | 商品数量:1 | shirtname: 333 | ; 孩子信息: {chineseName>lll name>Ryan familyName>Lee gender>女 school>boston grade>K class>1 studentId>1 id>Ryanlll selected>true}
   let shirtName = ''
   let number = ''
-  customData.split(';').forEach((item) => {
+  processSpecialChar(customData).forEach((item) => {
     const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
     // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
     if (!itemProductName) return
 
-    if (itemProductName.trim() === currentProductName.trim()) {
+    if (itemProductName.trim() === processSpecialChar(currentProductName).trim()) {
       shirtName = customData.match(/shirtname: (.*?) \|/)?.[1] || ''
       number = customData.match(/number: (.*?) \|/)?.[1] || ''
     }
