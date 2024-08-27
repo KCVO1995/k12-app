@@ -204,7 +204,7 @@ const toCsvArray = (records, columns) => {
 const getChildInfoByCustomData = (customData) => {
   // chineseName> name>Tong Tong familyName>Yip gender>Girl school>aisg-ersha grade>2 class>2C studentId>233771 id>Tong Tong selected>true
   // 去除多余的空格
-  customData = customData.replace(/( +)>( +)/g, '>').replace(/ +/g, ' ')
+  customData = (customData || '').replace(/( +)>( +)/g, '>').replace(/ +/g, ' ')
   const studentId = customData.match(/studentId>(.*) id>/)?.[1] || ''
   const chineseName = customData.match(/chineseName>(.*) name>/)?.[1] || ''
   const firstName = customData.match(/name>(.*) familyName>/)?.[1] || ''
@@ -216,9 +216,8 @@ const getChildInfoByCustomData = (customData) => {
 
 // 兼容特殊字符
 const processSpecialChar = (text) => {
-  return text
-    .replace(/#39;/g, `'`) // 避免干扰
-    .replace(/;/g, '') // 避免干扰
+  if (!text) return ''
+  return text.replace(/#39;/g, `'`) // 避免干扰
 }
 
 const getProductCustomInfoByCustomData = (customData, currentProductName) => {
@@ -226,16 +225,18 @@ const getProductCustomInfoByCustomData = (customData, currentProductName) => {
   // data-1: 商品名:AISG Alumni Letterman Jacket | 商品规格:SIZE:JXLGraduation:List year in number field | 商品数量:1 | number: 1 | shirtname: 1 | ; data-2: 商品名:Multi-sports Uniform 多用途球服 | 商品规格:SIZE 尺码:JL | 商品数量:1 | shirtname: 333 | ; 孩子信息: {chineseName>lll name>Ryan familyName>Lee gender>女 school>boston grade>K class>1 studentId>1 id>Ryanlll selected>true}
   let shirtName = ''
   let number = ''
-  processSpecialChar(customData).forEach((item) => {
-    const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
-    // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
-    if (!itemProductName) return
+  processSpecialChar(customData)
+    .split(';')
+    .forEach((item) => {
+      const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
+      // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
+      if (!itemProductName) return
 
-    if (itemProductName.trim() === processSpecialChar(currentProductName).trim()) {
-      shirtName = customData.match(/shirtname: (.*?) \|/)?.[1] || ''
-      number = customData.match(/number: (.*?) \|/)?.[1] || ''
-    }
-  })
+      if (itemProductName.trim() === processSpecialChar(currentProductName).trim()) {
+        shirtName = customData.match(/shirtname: (.*?) \|/)?.[1] || ''
+        number = customData.match(/number: (.*?) \|/)?.[1] || ''
+      }
+    })
 
   return {
     shirtName,
@@ -246,7 +247,7 @@ const getProductCustomInfoByCustomData = (customData, currentProductName) => {
 const getSkuInfoBySkuString = (skuString, options) => {
   let _skuString = skuString
   options.forEach((options) => {
-    _skuString = _skuString.replace(`${options}:`, '$')
+    _skuString = (_skuString || '').replace(`${options}:`, '$')
   })
   const skuArray = _skuString.split('$')
   return {
