@@ -233,8 +233,8 @@ const getProductCustomInfoByCustomData = (customData, currentProductName) => {
       if (!itemProductName) return
 
       if (itemProductName.trim() === processSpecialChar(currentProductName).trim()) {
-        shirtName = customData.match(/shirtname: (.*?) \|/)?.[1] || ''
-        number = customData.match(/number: (.*?) \|/)?.[1] || ''
+        shirtName = item.match(/shirtname: (.*?) \|/)?.[1] || ''
+        number = item.match(/number: (.*?) \|/)?.[1] || ''
       }
     })
 
