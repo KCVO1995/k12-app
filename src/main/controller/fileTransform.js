@@ -134,6 +134,7 @@ const generateResultData = async (csvData) => {
   const options = await getOptionList()
   console.log(options, 'getOptionList')
 
+  let orderLoopIndex = 0
   const resultData = csvData.map((data) => {
     if (!data.orderId && prevData) {
       data.orderId = prevData.orderId
@@ -144,10 +145,17 @@ const generateResultData = async (csvData) => {
       data['收货地址'] = prevData['收货地址']
       data['买家留言'] = prevData['买家留言']
       data['附加信息'] = prevData['附加信息']
+      orderLoopIndex++
+    } else {
+      orderLoopIndex = 0
     }
     const childInfo = getChildInfoByCustomData(data['附加信息'])
     const skuInfo = getSkuInfoBySkuString(data['规格'], options)
-    const productCustomInfo = getProductCustomInfoByCustomData(data['附加信息'], data['商品名'])
+    const productCustomInfo = getProductCustomInfoByCustomData(
+      data['附加信息'],
+      data['商品名'],
+      orderLoopIndex
+    )
     prevData = data
     const result = {
       orderId: data.orderId,
@@ -220,19 +228,22 @@ const processSpecialChar = (text) => {
   return text.replace(/#39;/g, `'`) // 避免干扰
 }
 
-const getProductCustomInfoByCustomData = (customData, currentProductName) => {
+const getProductCustomInfoByCustomData = (customData, currentProductName, orderLoopIndex) => {
   // data-1: 商品名:BIGZ Football Uniform | 商品规格:SIZE 尺码:L/180 | 商品数量:1 | shirtname: Chloe Hong | ; 孩子信息: {chineseName> name>Chloe familyName>Hong gender>Girl school>v000045 grade>10 class>NA studentId>15555 id>Chloe selected>true}
   // data-1: 商品名:AISG Alumni Letterman Jacket | 商品规格:SIZE:JXLGraduation:List year in number field | 商品数量:1 | number: 1 | shirtname: 1 | ; data-2: 商品名:Multi-sports Uniform 多用途球服 | 商品规格:SIZE 尺码:JL | 商品数量:1 | shirtname: 333 | ; 孩子信息: {chineseName>lll name>Ryan familyName>Lee gender>女 school>boston grade>K class>1 studentId>1 id>Ryanlll selected>true}
   let shirtName = ''
   let number = ''
   processSpecialChar(customData)
     .split(';')
-    .forEach((item) => {
+    .forEach((item, index) => {
       const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
       // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
       if (!itemProductName) return
 
-      if (itemProductName.trim() === processSpecialChar(currentProductName).trim()) {
+      if (
+        itemProductName.trim() === processSpecialChar(currentProductName).trim() &&
+        index === orderLoopIndex
+      ) {
         shirtName = item.match(/shirtname: (.*?) \|/)?.[1] || ''
         number = item.match(/number: (.*?) \|/)?.[1] || ''
       }
