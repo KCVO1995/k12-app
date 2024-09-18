@@ -134,7 +134,7 @@ const generateResultData = async (csvData) => {
   const options = await getOptionList()
   console.log(options, 'getOptionList')
 
-  let orderLoopIndex = 0
+  let customLoopIndex = 0
   const resultData = csvData.map((data) => {
     if (!data.orderId && prevData) {
       data.orderId = prevData.orderId
@@ -145,17 +145,18 @@ const generateResultData = async (csvData) => {
       data['收货地址'] = prevData['收货地址']
       data['买家留言'] = prevData['买家留言']
       data['附加信息'] = prevData['附加信息']
-      orderLoopIndex++
     } else {
-      orderLoopIndex = 0
+      customLoopIndex = 0
     }
     const childInfo = getChildInfoByCustomData(data['附加信息'])
     const skuInfo = getSkuInfoBySkuString(data['规格'], options)
     const productCustomInfo = getProductCustomInfoByCustomData(
       data['附加信息'],
       data['商品名'],
-      orderLoopIndex
+      customLoopIndex
     )
+    customLoopIndex = productCustomInfo.customLoopIndex
+
     prevData = data
     const result = {
       orderId: data.orderId,
@@ -228,11 +229,12 @@ const processSpecialChar = (text) => {
   return text.replace(/#39;/g, `'`) // 避免干扰
 }
 
-const getProductCustomInfoByCustomData = (customData, currentProductName, orderLoopIndex) => {
+const getProductCustomInfoByCustomData = (customData, currentProductName, customLoopIndex) => {
   // data-1: 商品名:BIGZ Football Uniform | 商品规格:SIZE 尺码:L/180 | 商品数量:1 | shirtname: Chloe Hong | ; 孩子信息: {chineseName> name>Chloe familyName>Hong gender>Girl school>v000045 grade>10 class>NA studentId>15555 id>Chloe selected>true}
   // data-1: 商品名:AISG Alumni Letterman Jacket | 商品规格:SIZE:JXLGraduation:List year in number field | 商品数量:1 | number: 1 | shirtname: 1 | ; data-2: 商品名:Multi-sports Uniform 多用途球服 | 商品规格:SIZE 尺码:JL | 商品数量:1 | shirtname: 333 | ; 孩子信息: {chineseName>lll name>Ryan familyName>Lee gender>女 school>boston grade>K class>1 studentId>1 id>Ryanlll selected>true}
   let shirtName = ''
   let number = ''
+  let matched = false
   processSpecialChar(customData)
     .split(';')
     .forEach((item, index) => {
@@ -241,9 +243,12 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, orderL
       if (!itemProductName) return
 
       if (
+        !matched &&
         itemProductName.trim() === processSpecialChar(currentProductName).trim() &&
-        index === orderLoopIndex
+        index === customLoopIndex
       ) {
+        customLoopIndex++
+        matched = true
         shirtName = item.match(/shirtname: (.*?) \|/)?.[1] || ''
         number = item.match(/number: (.*?) \|/)?.[1] || ''
       }
@@ -251,7 +256,8 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, orderL
 
   return {
     shirtName,
-    number
+    number,
+    customLoopIndex
   }
 }
 
