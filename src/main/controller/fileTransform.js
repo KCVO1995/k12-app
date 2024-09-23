@@ -249,7 +249,7 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, custom
       ) {
         customLoopIndex++
         matched = true
-        shirtName = item.match(/shirtname: (.*?) \|/)?.[1] || ''
+        shirtName = item.match(/(shirtname|name): (.*?) \|/)[2] || ''
         number = item.match(/number: (.*?) \|/)?.[1] || ''
       }
     })
