@@ -236,9 +236,12 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, custom
   let number = ''
   let matched = false
   processSpecialChar(customData)
+    .replace(/&amp;/g, '___AMP___')
     .split(';')
+    .map((part) => part.replace(/___AMP___/g, '&amp;'))
     .forEach((item, index) => {
       const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
+
       // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
       if (!itemProductName) return
 
