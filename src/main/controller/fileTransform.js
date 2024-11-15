@@ -134,8 +134,8 @@ const generateResultData = async (csvData) => {
   const options = await getOptionList()
   console.log(options, 'getOptionList')
 
-  let customLoopIndex = 0
-  const resultData = csvData.map((data) => {
+  const resultData = []
+  csvData.forEach((data) => {
     if (!data.orderId && prevData) {
       data.orderId = prevData.orderId
       data['创建时间'] = prevData['创建时间']
@@ -145,25 +145,23 @@ const generateResultData = async (csvData) => {
       data['收货地址'] = prevData['收货地址']
       data['买家留言'] = prevData['买家留言']
       data['附加信息'] = prevData['附加信息']
-    } else {
-      customLoopIndex = 0
     }
+
     const childInfo = getChildInfoByCustomData(data['附加信息'])
     const skuInfo = getSkuInfoBySkuString(data['规格'], options)
-    const productCustomInfo = getProductCustomInfoByCustomData(
+    const productCustomInfoList = getProductCustomInfoByCustomData(
       data['附加信息'],
       data['商品名'],
-      customLoopIndex
+      data['规格']
     )
-    customLoopIndex = productCustomInfo.customLoopIndex
 
     prevData = data
-    const result = {
+
+    const commonFields = {
       orderId: data.orderId,
       createTime: data['创建时间'],
       ...childInfo,
       productName: data['商品名'],
-      ...productCustomInfo,
       ...skuInfo,
       qty: data['数量'],
       price: data['单价'],
@@ -174,8 +172,22 @@ const generateResultData = async (csvData) => {
       remark: data['买家留言'],
       customData: data['附加信息']
     }
-    return result
+
+    // 如果所有商品定制信息，根据定制信息的数量，生成多行数据
+    if (productCustomInfoList.length > 0) {
+      productCustomInfoList.forEach((customInfo) => {
+        const result = {
+          ...commonFields,
+          ...customInfo,
+          qty: customInfo.count
+        }
+        resultData.push(result)
+      })
+    } else {
+      resultData.push(commonFields)
+    }
   })
+
   return resultData
 }
 
@@ -229,39 +241,47 @@ const processSpecialChar = (text) => {
   return text.replace(/#39;/g, `'`) // 避免干扰
 }
 
-const getProductCustomInfoByCustomData = (customData, currentProductName, customLoopIndex) => {
-  // data-1: 商品名:BIGZ Football Uniform | 商品规格:SIZE 尺码:L/180 | 商品数量:1 | shirtname: Chloe Hong | ; 孩子信息: {chineseName> name>Chloe familyName>Hong gender>Girl school>v000045 grade>10 class>NA studentId>15555 id>Chloe selected>true}
-  // data-1: 商品名:AISG Alumni Letterman Jacket | 商品规格:SIZE:JXLGraduation:List year in number field | 商品数量:1 | number: 1 | shirtname: 1 | ; data-2: 商品名:Multi-sports Uniform 多用途球服 | 商品规格:SIZE 尺码:JL | 商品数量:1 | shirtname: 333 | ; 孩子信息: {chineseName>lll name>Ryan familyName>Lee gender>女 school>boston grade>K class>1 studentId>1 id>Ryanlll selected>true}
-  let shirtName = ''
-  let number = ''
-  let matched = false
+const getProductCustomInfoByCustomData = (customData, currentProductName, currentSkuName) => {
+  // list 的作用是同一个订单里，同商品同规格，可以有多个定制信息
+  const results = []
   processSpecialChar(customData)
     .replace(/&amp;/g, '___AMP___')
     .split(';')
     .map((part) => part.replace(/___AMP___/g, '&amp;'))
-    .forEach((item, index) => {
+    .forEach((item) => {
       const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
+      const itemSkuName = item.match(/商品规格:(.*?) \|/)?.[1]
+      const itemCount = item.match(/商品数量:(.*?) \|/)?.[1]
 
       // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
       if (!itemProductName) return
 
+      console.log(
+        itemProductName,
+        'itemProductName',
+        currentProductName,
+        'currentProductName',
+        itemSkuName,
+        'itemSkuName',
+        currentSkuName,
+        'currentSkuName'
+      )
+
       if (
-        !matched &&
         itemProductName.trim() === processSpecialChar(currentProductName).trim() &&
-        index === customLoopIndex
+        itemSkuName.trim() === processSpecialChar(currentSkuName).trim()
       ) {
-        customLoopIndex++
-        matched = true
-        shirtName = item.match(/(shirtname|name): (.*?) \|/)[2] || ''
-        number = item.match(/number: (.*?) \|/)?.[1] || ''
+        const shirtName = item.match(/(shirtname|name): (.*?) \|/)[2] || ''
+        const number = item.match(/number: (.*?) \|/)?.[1] || ''
+        results.push({
+          shirtName,
+          number,
+          count: itemCount
+        })
       }
     })
 
-  return {
-    shirtName,
-    number,
-    customLoopIndex
-  }
+  return results
 }
 
 const getSkuInfoBySkuString = (skuString, options) => {
