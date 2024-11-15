@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: k12-app
+appId: com.k12-app.app
+productName: k12-app-v2
 directories:
   buildResources: build
 files:
@@ -11,7 +11,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: k12-app
+  executableName: k12-app-v2
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
