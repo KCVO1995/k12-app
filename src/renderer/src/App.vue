@@ -4,12 +4,15 @@ import FileTransform from './components/FileTransform/index.vue'
 
 <template>
   <div class="global">
-    <FileTransform />
+    <h1>v2</h1>
+    <div class="content">
+      <FileTransform />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.global {
+.content {
   display: flex;
   justify-content: center;
   align-items: center;

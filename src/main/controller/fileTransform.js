@@ -196,7 +196,7 @@ export const handleTransformFile = async (event, filePath) => {
   const csvData = readCsvFile(filePath)
   const resultData = await generateResultData(csvData)
   outputRow = toCsvArray(resultData, columns)
-  console.log(outputRow, 'outputRow')
+  // console.log(outputRow, 'outputRow')
 
   return 'ok'
 }
@@ -249,9 +249,9 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, curren
     .split(';')
     .map((part) => part.replace(/___AMP___/g, '&amp;'))
     .forEach((item) => {
-      const itemProductName = item.match(/商品名:(.*?) \|/)?.[1]
-      const itemSkuName = item.match(/商品规格:(.*?) \|/)?.[1]
-      const itemCount = item.match(/商品数量:(.*?) \|/)?.[1]
+      const itemProductName = item.match(/商品名:(.*?) \|/)?.[1] || ''
+      const itemSkuName = item.match(/商品规格:(.*?) \|/)?.[1] || ''
+      const itemCount = item.match(/商品数量:(.*?) \|/)?.[1] || 0
 
       // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
       if (!itemProductName) return
@@ -264,7 +264,10 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, curren
         itemSkuName,
         'itemSkuName',
         currentSkuName,
-        'currentSkuName'
+        'currentSkuName',
+        itemProductName.trim() === processSpecialChar(currentProductName).trim(),
+        'fuck',
+        itemSkuName.trim() === processSpecialChar(currentSkuName).trim()
       )
 
       if (
