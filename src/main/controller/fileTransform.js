@@ -31,6 +31,10 @@ const columns = [
     key: 'familyName'
   },
   {
+    title: 'Gender',
+    key: 'gender'
+  },
+  {
     title: 'Grade',
     key: 'grade'
   },
@@ -230,9 +234,10 @@ const getChildInfoByCustomData = (customData) => {
   const chineseName = customData.match(/chineseName>(.*) name>/)?.[1] || ''
   const firstName = customData.match(/name>(.*) familyName>/)?.[1] || ''
   const familyName = customData.match(/familyName>(.*) gender>/)?.[1] || ''
+  const gender = customData.match(/gender>(.*) school>/)?.[1] || ''
   const grade = customData.match(/grade>(.*) class>/)?.[1] || ''
   const schoolClass = customData.match(/class>(.*) studentId>/)?.[1] || ''
-  return { studentId, chineseName, firstName, familyName, grade, schoolClass }
+  return { studentId, chineseName, firstName, familyName, grade, schoolClass, gender }
 }
 
 // 兼容特殊字符
@@ -256,19 +261,19 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, curren
       // 一个家长同时在同一订单内购买了两个不同品牌的同名商品的情况下，可能匹配错误
       if (!itemProductName) return
 
-      console.log(
-        itemProductName,
-        'itemProductName',
-        currentProductName,
-        'currentProductName',
-        itemSkuName,
-        'itemSkuName',
-        currentSkuName,
-        'currentSkuName',
-        itemProductName.trim() === processSpecialChar(currentProductName).trim(),
-        'fuck',
-        itemSkuName.trim() === processSpecialChar(currentSkuName).trim()
-      )
+      // console.log(
+      //   itemProductName,
+      //   'itemProductName',
+      //   currentProductName,
+      //   'currentProductName',
+      //   itemSkuName,
+      //   'itemSkuName',
+      //   currentSkuName,
+      //   'currentSkuName',
+      //   itemProductName.trim() === processSpecialChar(currentProductName).trim(),
+      //   'fuck',
+      //   itemSkuName.trim() === processSpecialChar(currentSkuName).trim()
+      // )
 
       if (
         itemProductName.trim() === processSpecialChar(currentProductName).trim() &&
