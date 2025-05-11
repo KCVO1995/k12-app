@@ -4,7 +4,7 @@ import FileTransform from './components/FileTransform/index.vue'
 
 <template>
   <div class="global">
-    <h1>v2</h1>
+    <h1>v2.0.1</h1>
     <div class="content">
       <FileTransform />
     </div>
