@@ -230,14 +230,23 @@ const getChildInfoByCustomData = (customData) => {
   // chineseName> name>Tong Tong familyName>Yip gender>Girl school>aisg-ersha grade>2 class>2C studentId>233771 id>Tong Tong selected>true
   // 去除多余的空格
   customData = (customData || '').replace(/( +)>( +)/g, '>').replace(/ +/g, ' ')
-  const studentId = customData.match(/studentId>(.*) id>/)?.[1] || ''
-  const chineseName = customData.match(/chineseName>(.*) name>/)?.[1] || ''
-  const firstName = customData.match(/name>(.*) familyName>/)?.[1] || ''
-  const familyName = customData.match(/familyName>(.*) gender>/)?.[1] || ''
-  const gender = customData.match(/gender>(.*) school>/)?.[1] || ''
-  const grade = customData.match(/grade>(.*) class>/)?.[1] || ''
-  const schoolClass = customData.match(/class>(.*) studentId>/)?.[1] || ''
-  return { studentId, chineseName, firstName, familyName, grade, schoolClass, gender }
+  const studentId = customData.match(/studentId\s*>\s*([^}\s]+)/)?.[1] || ''
+  const chineseName = customData.match(/chineseName\s*>\s*([^}\s]+)/)?.[1] || ''
+  const firstName = customData.match(/name\s*>\s*([^}\s]+)/)?.[1] || ''
+  const familyName = customData.match(/familyName\s*>\s*([^}\s]+)/)?.[1] || ''
+  const gender = customData.match(/gender\s*>\s*([^}\s]+)/)?.[1] || ''
+  const grade = customData.match(/grade\s*>\s*([^}\s]+)/)?.[1] || ''
+  const schoolClass = customData.match(/class\s*>\s*([^}\s]+)/)?.[1] || ''
+
+  return {
+    studentId,
+    chineseName: chineseName.includes('name>') ? '' : chineseName,
+    firstName,
+    familyName,
+    grade,
+    schoolClass,
+    gender
+  }
 }
 
 // 兼容特殊字符
