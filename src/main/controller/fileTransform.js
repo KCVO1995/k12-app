@@ -288,7 +288,7 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, curren
         itemProductName.trim() === processSpecialChar(currentProductName).trim() &&
         itemSkuName.trim() === processSpecialChar(currentSkuName).trim()
       ) {
-        const shirtName = item.match(/(shirtname|name): (.*?) \|/)[2] || ''
+        const shirtName = item.match(/(shirtname|name): (.*?) \|/)?.[2] || ''
         const number = item.match(/number: (.*?) \|/)?.[1] || ''
         results.push({
           shirtName,
