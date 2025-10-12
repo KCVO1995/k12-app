@@ -235,7 +235,8 @@ const getChildInfoByCustomData = (customData) => {
   const firstName = customData.match(/name\s*>\s*([^}\s]+)/)?.[1] || ''
   const familyName = customData.match(/familyName\s*>\s*([^}\s]+)/)?.[1] || ''
   const gender = customData.match(/gender\s*>\s*([^}\s]+)/)?.[1] || ''
-  const grade = customData.match(/grade\s*>\s*([^}\s]+)/)?.[1] || ''
+  // const grade = customData.match(/grade\s*>\s*([^}\s]+)/)?.[1] || ''
+  const grade = customData.match(/grade>(.*) class>/)?.[1] || ''
   const schoolClass = customData.match(/class\s*>\s*([^}\s]+)/)?.[1] || ''
 
   return {
