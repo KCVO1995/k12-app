@@ -272,17 +272,12 @@ const getProductCustomInfoByCustomData = (customData, currentProductName, curren
       if (!itemProductName) return
 
       // console.log(
-      //   itemProductName,
-      //   'itemProductName',
-      //   currentProductName,
-      //   'currentProductName',
-      //   itemSkuName,
-      //   'itemSkuName',
-      //   currentSkuName,
-      //   'currentSkuName',
-      //   itemProductName.trim() === processSpecialChar(currentProductName).trim(),
-      //   'fuck',
-      //   itemSkuName.trim() === processSpecialChar(currentSkuName).trim()
+      //   `itemProductName: ${itemProductName} \n`,
+      //   `currentProductName: ${currentProductName} \n`,
+      //   `itemSkuName: ${itemSkuName} \n`,
+      //   `currentSkuName: ${currentSkuName} \n`,
+      //   `itemProductName.trim() === processSpecialChar(currentProductName).trim(): ${itemProductName.trim() === processSpecialChar(currentProductName).trim()} \n`,
+      //   `itemSkuName.trim() === processSpecialChar(currentSkuName).trim(): ${itemSkuName.trim() === processSpecialChar(currentSkuName).trim()} \n`
       // )
 
       if (
