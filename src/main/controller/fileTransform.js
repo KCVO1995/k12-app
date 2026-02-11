@@ -23,8 +23,8 @@ const columns = [
     key: 'chineseName'
   },
   {
-    title: 'First Name',
-    key: 'firstName'
+    title: 'English Name',
+    key: 'englishName'
   },
   {
     title: 'Family Name',
@@ -232,7 +232,7 @@ const getChildInfoByCustomData = (customData) => {
   customData = (customData || '').replace(/( +)>( +)/g, '>').replace(/ +/g, ' ')
   const studentId = customData.match(/studentId\s*>\s*([^}\s]+)/)?.[1] || ''
   const chineseName = customData.match(/chineseName\s*>\s*([^}\s]+)/)?.[1] || ''
-  const firstName = customData.match(/name\s*>\s*([^}\s]+)/)?.[1] || ''
+  const englishName = customData.match(/name\s*>\s*([^}\s]+)/)?.[1] || ''
   const familyName = customData.match(/familyName\s*>\s*([^}\s]+)/)?.[1] || ''
   const gender = customData.match(/gender\s*>\s*([^}\s]+)/)?.[1] || ''
   // const grade = customData.match(/grade\s*>\s*([^}\s]+)/)?.[1] || ''
@@ -242,7 +242,7 @@ const getChildInfoByCustomData = (customData) => {
   return {
     studentId,
     chineseName: chineseName.includes('name>') ? '' : chineseName,
-    firstName,
+    englishName,
     familyName,
     grade,
     schoolClass,
