@@ -106,6 +106,10 @@ const columns = [
     title: '物流公司',
     key: 'logisticsCompany'
   },
+  {
+    title: '订单笔记',
+    key: 'orderNote'
+  },
 ]
 
 const getOptionList = async () => {
@@ -157,6 +161,7 @@ const generateResultData = async (csvData) => {
       data['收货地址'] = prevData['收货地址']
       data['买家留言'] = prevData['买家留言']
       data['附加信息'] = prevData['附加信息']
+      data['订单笔记'] = prevData['订单笔记']
     }
 
     const childInfo = getChildInfoByCustomData(data['附加信息'])
@@ -184,7 +189,8 @@ const generateResultData = async (csvData) => {
       remark: data['买家留言'],
       customData: data['附加信息'],
       shippingFee: data['运费'],
-      logisticsCompany: data['物流公司']
+      logisticsCompany: data['物流公司'],
+      orderNote: data['订单笔记']
     }
 
     // 如果所有商品定制信息，根据定制信息的数量，生成多行数据
